@@ -1,6 +1,8 @@
-#include "square.h"
+#include <iostream>
 
-int main()
-{
-    return square(2);
+using namespace std;
+
+int main(int argc, char *argv[]) {
+    cout << "Hello, " << argv[1] << "!\n";
+    return 0;
 }
