@@ -50,51 +50,59 @@ public:
     }
 
     iterator operator + (int n) const noexcept {
-        throw std::runtime_error("not implemented");
+        return iterator(ptr_ + n);
     }
 
     iterator & operator += (int n) noexcept {
-        throw std::runtime_error("not implemented");
+        ptr_ += n;
+        return *this;
     }
 
     iterator operator - (int n) const noexcept {
-        throw std::runtime_error("not implemented");
+        return iterator(ptr_ - n);
     }
 
     iterator & operator -= (int n) noexcept {
-        throw std::runtime_error("not implemented");
+        ptr_ -= n;
+        return *this;
     }
 
     reference operator [] (int n) const noexcept {
-        throw std::runtime_error("not implemented");
+        return *(ptr_ + n);
     }
 
     iterator & operator ++ () noexcept {
-        throw std::runtime_error("not implemented");
+        ++ptr_;
+        return *this;
     }
 
     iterator & operator -- () noexcept {
-        throw std::runtime_error("not implemented");
+        --ptr_;
+        return *this;
     }
 
     iterator operator ++ (int) noexcept {
-        throw std::runtime_error("not implemented");
+        iterator tmp = *this;
+        ++ptr_;
+        return tmp;
     }
 
     iterator operator -- (int) noexcept {
-        throw std::runtime_error("not implemented");
+        iterator tmp = *this;
+        --ptr_;
+        return tmp;
     }
 
-    friend iterator& operator + (int n, const iterator & it) noexcept {
-        throw std::runtime_error("not implemented");
+    friend iterator operator + (int n, const iterator & it) noexcept {
+        return iterator(it.ptr_ + n);
     }
 
-    friend iterator& operator - (int n, const iterator & it) noexcept {
-        throw std::runtime_error("not implemented");
+    friend iterator operator - (int n, const iterator & it) noexcept {
+        return iterator(it.ptr_ - n);
     }
 
     friend int operator - (const iterator & lhs, const iterator & rhs) noexcept {
-        throw std::runtime_error("not implemented");
+        return lhs.ptr_ - rhs.ptr_;
     }
 private:
     pointer ptr_;
