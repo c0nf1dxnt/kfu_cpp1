@@ -22,9 +22,7 @@
 #include <vector>
 #include <thread>
 #include <iostream>
-#include <algorithm>
 #include <iomanip>
-
 
 class Integral {
 private:
@@ -41,26 +39,52 @@ public:
         tn = std::stoi(argv[4]);
     }
 
-
     static double integralFunction(double x) {
-        // тут нужно реализовать функцию интеграла S(a, b) = (1+e^x)^0.5 dx
-        return 0;
+        return std::sqrt(1 + std::exp(x));
     }
-
+    
+    static double calculatePartialIntegral(double start, double end, int segments) {
+        double h = (end - start) / segments;
+        double sum = 0.5 * (integralFunction(start) + integralFunction(end));
+        
+        for (int i = 1; i < segments; i++) {
+            sum += integralFunction(start + i * h);
+        }
+        
+        return h * sum;
+    }
 
     double calculateIntegral() {
-        // в зависимости от количество потоков (tn) реализуйте подсчёт интеграла
-        return 0;
-    }
+        if (tn <= 0 || n <= 0) return 0;
 
+        int segmentsPerThread = n / tn;
+        double rangePerThread = static_cast<double>(b - a) / tn;
+        
+        std::vector<double> results(tn);
+        std::vector<std::thread> threads;
+        
+        for (int i = 0; i < tn; i++) {
+            double start = a + i * rangePerThread;
+            double end = (i == tn - 1) ? b : start + rangePerThread;
+            
+            threads.emplace_back([&results, i, start, end, segmentsPerThread]() {
+                results[i] = calculatePartialIntegral(start, end, segmentsPerThread);
+            });
+        }
+        
+        for (auto &thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+        return std::accumulate(results.begin(), results.end(), 0.0);
+    }
 };
 
 
-
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     auto i = Integral(argc, argv);
-    std::cout << std::fixed << std::setprecision (4);
+    std::cout << std::fixed << std::setprecision(4);
     std::cout << i.calculateIntegral() << std::endl;
     return 0;
 }
